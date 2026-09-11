@@ -1,0 +1,24 @@
+{
+  "name": "prc-bridge",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Connect existing PRC integrations to Agent Ready Content on WordPress VIP.",
+  "license": "GPL-2.0-or-later",
+  "files": [
+    "includes/",
+    "LICENSE",
+    "NOTICE.md",
+    "README.md",
+    "prc-bridge.php"
+  ],
+  "scripts": {
+    "plugin-zip": "wp-scripts plugin-zip"
+  },
+  "devDependencies": {
+    "@wordpress/scripts": "^35.0.0"
+  },
+  "engines": {
+    "node": "^20.19.0 || >=22.13.0",
+    "npm": ">=10.0.0"
+  }
+}

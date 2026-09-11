@@ -30,6 +30,7 @@ tests_add_filter(
 	'muplugins_loaded',
 	static function (): void {
 		require __DIR__ . '/../../agent-ready-content.php';
+		require __DIR__ . '/../../integrations/prc-bridge/prc-bridge.php';
 
 		add_action(
 			'agent_ready_content_register_block_callbacks',
@@ -40,6 +41,25 @@ tests_add_filter(
 						return '**' . ( $block['attrs']['text'] ?? '' ) . '**';
 					}
 				);
+			}
+		);
+
+		add_action(
+			'prc_markdown_for_agents_register_block_callbacks',
+			static function (): void {
+				\PRC\Platform\Markdown_For_Agents\Block_Markdown_Registry::register(
+					'prc-bridge/test-block',
+					static function ( array $block ): string {
+						return (string) ( $block['attrs']['text'] ?? '' );
+					}
+				);
+			}
+		);
+
+		add_filter(
+			'prc_markdown_for_agents_block_prc-bridge/test-block',
+			static function ( string $markdown ): string {
+				return '**' . $markdown . '**';
 			}
 		);
 	}

@@ -10,6 +10,17 @@ provides `/llms.txt` discovery. Requires WordPress 6.8+, PHP 8.2+, and the VIP p
 Derived from **PRC Markdown for Agents by Pew Research Center**. See [NOTICE.md](NOTICE.md)
 for attribution and source revisions, and [LICENSE](LICENSE) for the original GPL license.
 
+## Table of contents
+
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Content and discovery](#content-and-discovery)
+- [Build the settings assets](#build-the-settings-assets)
+- [Extend the base](#extend-the-base)
+  - [Integration example](#integration-example)
+- [Metadata and settings contracts](#metadata-and-settings-contracts)
+- [Contributing](#contributing)
+
 ## Requirements
 
 - WordPress 6.8 or newer
@@ -84,6 +95,10 @@ composer test:unit
 
 Composer installs development-only PHP tooling. The plugin does not load `vendor/` at runtime, and that directory is not included in deployments.
 
+The repository's [`integrations/`](integrations/README.md) directory is also
+excluded from the base plugin release package. Integrations must be installed
+and loaded as separate WordPress plugins.
+
 The settings source uses strict TypeScript and core WordPress components.
 `index.tsx` mounts the page; `app.tsx` arranges its sections. The `hooks/` directory
 contains loading, queued saving, section drafts, and post search. Shared controls
@@ -157,7 +172,14 @@ metadata path. Preserve this distinction when adding integrations.
 
 Enable another post type with `add_post_type_support( $type, 'agent-ready-content' )`.
 Declare `agent-ready-content-llms-txt` support when its updates contribute to the
-index. Providers own their own data, queries, and dependencies.
+index. Provider-specific data, queries, and dependencies remain outside the base
+plugin.
+
+### Integration example
+
+The separately loaded [PRC Bridge](integrations/prc-bridge/README.md) shows how
+current PRC Markdown for Agents integrations can work with Agent Ready Content
+without shipping PRC compatibility code in the base plugin.
 
 When related data changes, integrations identify the affected article IDs and call:
 
@@ -190,4 +212,11 @@ integration-maintained output; use the defaults filter for editable starter text
 Content-Signal accepts `yes`/`no`, `true`/`false`, booleans, and `1`/`0` for
 `ai-train`, `search`, and `ai-input`. Unknown keys and values are omitted. The
 original all-yes defaults remain in place. Legacy PRC settings migration and
-legacy filter translation belong in the future bridge, not this base.
+legacy filter translation belong in the separate
+[PRC Bridge](integrations/prc-bridge/README.md), not this base.
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for local setup, the plugin architecture,
+test coverage, common change recipes, and the release boundaries between the
+base plugin and integrations.
