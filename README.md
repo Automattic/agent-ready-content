@@ -18,10 +18,9 @@ for attribution and source revisions, and [LICENSE](LICENSE) for the original GP
 
 ## Installation
 
-Clone the repository into the WordPress plugins directory and build the settings assets:
+Clone the repository into the WordPress plugins directory and build it:
 
 ```sh
-cd wp-content/plugins
 git clone git@github.com:Automattic/agent-ready-content.git
 cd agent-ready-content
 nvm use
@@ -35,8 +34,7 @@ On WordPress VIP, follow the documentation for [activating plugins through code]
 
 Use **Settings → Agent Ready Content** to edit the site summary, About links,
 categories, ordered featured posts, and additional resources. The site name and
-tagline provide neutral defaults. Existing PRC plugin settings are not modified
-or imported. A compatibility bridge and migration are separate future work.
+tagline provide neutral defaults.
 
 ## Content and discovery
 
@@ -92,8 +90,7 @@ contains loading, queued saving, section drafts, and post search. Shared control
 live in `components/`, and the settings forms live in `sections/`.
 The build uses `@wordpress/scripts` locally and generates a dependency manifest.
 All npm packages are development dependencies; `.nvmrc` selects Node 24.
-WordPress provides the runtime packages. The plugin has no parent-repository
-webpack configuration or PRC JavaScript dependency.
+WordPress provides the runtime packages.
 
 Run the complete check set before proposing a change:
 
@@ -112,12 +109,6 @@ npm run test:integration
 
 All PHP classes live in `Agent_Ready_Content`. Hook names, options, cache groups,
 and the REST namespace use `agent_ready_content` / `agent-ready-content`.
-The callback contract and conversion precedence are retained from the original
-plugin, with the new public names below. Existing PRC integrations need the
-planned bridge for their old PHP names, hooks, metadata, and post-type support.
-No bridge, provider adapters, or automatic PRC aliases are bundled here. The
-original action is `prc_markdown_for_agents_register_block_callbacks`; the bridge
-must translate that action and the associated PHP names and block metadata.
 
 Register a block callback before `init` priority 5. Integrations should register
 block types on `init`, after the plugin has installed its metadata filter:
