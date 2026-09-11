@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="agent-ready-content" xsi:noNamespaceSchemaLocation="vendor/squizlabs/php_codesniffer/phpcs.xsd">
+	<description>WordPress VIP coding standards for Agent Ready Content.</description>
+
+	<file>.</file>
+	<exclude-pattern>/build/</exclude-pattern>
+	<exclude-pattern>/.github/</exclude-pattern>
+	<exclude-pattern>/node_modules/</exclude-pattern>
+	<exclude-pattern>/vendor/</exclude-pattern>
+
+	<arg value="sp"/>
+	<arg name="basepath" value="./"/>
+	<arg name="colors"/>
+	<arg name="extensions" value="php"/>
+	<arg name="parallel" value="8"/>
+
+	<rule ref="PHPCompatibilityWP"/>
+	<config name="testVersion" value="8.2-"/>
+
+	<rule ref="WordPress-Extra"/>
+	<config name="minimum_supported_wp_version" value="6.8"/>
+
+	<rule ref="WordPress-VIP-Go"/>
+
+	<!-- VIPWPCS excludes this check, but trailing whitespace fails git diff checks. -->
+	<rule ref="Squiz.WhiteSpace.SuperfluousWhitespace.EndLine"/>
+
+	<!-- These deprecated JavaScript sniffs are not applicable to PHP-only scans. -->
+	<rule ref="WordPressVIPMinimum.JS.Window">
+		<exclude name="WordPressVIPMinimum.JS.Window"/>
+	</rule>
+	<rule ref="WordPressVIPMinimum.JS.DangerouslySetInnerHTML">
+		<exclude name="WordPressVIPMinimum.JS.DangerouslySetInnerHTML"/>
+	</rule>
+	<rule ref="WordPressVIPMinimum.JS.InnerHTML">
+		<exclude name="WordPressVIPMinimum.JS.InnerHTML"/>
+	</rule>
+	<rule ref="WordPressVIPMinimum.JS.StrippingTags">
+		<exclude name="WordPressVIPMinimum.JS.StrippingTags"/>
+	</rule>
+	<rule ref="WordPressVIPMinimum.JS.StringConcat">
+		<exclude name="WordPressVIPMinimum.JS.StringConcat"/>
+	</rule>
+	<rule ref="WordPressVIPMinimum.JS.HTMLExecutingFunctions">
+		<exclude name="WordPressVIPMinimum.JS.HTMLExecutingFunctions"/>
+	</rule>
+	<rule ref="Generic.Functions.CallTimePassByReference">
+		<exclude name="Generic.Functions.CallTimePassByReference"/>
+	</rule>
+
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+		<exclude-pattern>tests/**/bootstrap.php</exclude-pattern>
+		<properties>
+			<property name="prefixes" type="array">
+				<element value="agent_ready_content"/>
+				<element value="AGENT_READY_CONTENT"/>
+				<element value="Agent_Ready_Content"/>
+			</property>
+		</properties>
+	</rule>
+
+	<rule ref="WordPress.Files.FileName">
+		<exclude-pattern>tests/</exclude-pattern>
+	</rule>
+
+	<rule ref="Generic.CodeAnalysis.UnusedFunctionParameter">
+		<exclude-pattern>tests/**/bootstrap.php</exclude-pattern>
+	</rule>
+
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array">
+				<element value="agent-ready-content"/>
+			</property>
+		</properties>
+	</rule>
+</ruleset>

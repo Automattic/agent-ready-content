@@ -1,0 +1,35 @@
+{
+  "name": "automattic/agent-ready-content",
+  "description": "Markdown publishing and agent discovery for WordPress VIP.",
+  "type": "wordpress-plugin",
+  "license": "GPL-2.0-or-later",
+  "authors": [
+    {
+      "name": "WPVIP",
+      "homepage": "https://wpvip.com"
+    }
+  ],
+  "require": {
+    "php": ">=8.2"
+  },
+  "require-dev": {
+    "automattic/vipwpcs": "^3.1",
+    "phpcompatibility/phpcompatibility-wp": "^2.1",
+    "phpunit/phpunit": "^9.6",
+    "yoast/phpunit-polyfills": "^4.0"
+  },
+  "scripts": {
+    "phpcs": "phpcs --cache",
+    "phpcs-fix": "phpcbf",
+    "test:unit": "phpunit -c phpunit.xml"
+  },
+  "config": {
+    "platform": {
+      "php": "8.2.0"
+    },
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    },
+    "sort-packages": true
+  }
+}
