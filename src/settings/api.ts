@@ -1,0 +1,6 @@
+import apiFetch from '@wordpress/api-fetch';
+
+export const config = window.agentReadyContentSettings;
+apiFetch.use( apiFetch.createNonceMiddleware( config.nonce ) );
+apiFetch.use( apiFetch.createRootURLMiddleware( config.restUrl ) );
+export const settingsPath = '/agent-ready-content/v1/settings';
