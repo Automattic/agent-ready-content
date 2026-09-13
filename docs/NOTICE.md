@@ -12,5 +12,5 @@ quote conversion, and encoding fixes in this repository through revision
 settings assets, neutral site defaults, and a provider-independent base.
 
 This is a derivative project, not an official Pew Research Center release or
-endorsement. The original GPL licence is preserved in LICENSE. Distribution and
+endorsement. The original GPL licence is preserved in [LICENSE](../LICENSE). Distribution and
 modification remain subject to that licence.

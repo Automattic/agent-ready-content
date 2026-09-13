@@ -12,7 +12,7 @@
  * Text Domain:       agent-ready-content
  *
  * Derived from PRC Markdown for Agents by Pew Research Center.
- * Original copyright 2025 Pew Research Center. See NOTICE.md and LICENSE.
+ * Original copyright 2025 Pew Research Center. See docs/NOTICE.md and LICENSE.
  *
  * @package Agent_Ready_Content
  */

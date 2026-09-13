@@ -8,7 +8,8 @@
     "includes/",
     "agent-ready-content.php",
     "LICENSE",
-    "NOTICE.md",
+    "docs/NOTICE.md",
+    "docs/PLUGIN-GUIDE.md",
     "README.md"
   ],
   "scripts": {

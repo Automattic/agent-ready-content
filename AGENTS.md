@@ -13,7 +13,7 @@ The supported runtime is WordPress 6.8 or newer, PHP 8.2 or newer, and the WordP
 - `includes/` contains the PHP implementation in the `Agent_Ready_Content` namespace.
 - `src/settings/` contains the TypeScript settings application.
 - `build/settings/` contains generated production assets loaded by WordPress.
-- `README.md` documents installation, behavior, and public extension contracts.
+- `README.md` provides the project overview; `docs/PLUGIN-GUIDE.md` documents behavior and public extension contracts.
 
 ## Development setup
 
@@ -32,10 +32,14 @@ Run these checks after making relevant changes:
 ```sh
 composer validate --strict
 composer phpcs
+composer test:unit
 npm run typecheck
 npm run lint:js
+npm run format:check
 npm run build
 find . -path ./node_modules -prune -o -name '*.php' -print0 | xargs -0 -n1 php -l
+npx wp-env start
+npm run test:integration
 git diff --check
 ```
 
@@ -52,14 +56,14 @@ CI verifies that the required production assets can be generated from source.
 ## Implementation constraints
 
 - Keep public PHP classes in the `Agent_Ready_Content` namespace and public identifiers under `agent_ready_content` or `agent-ready-content`.
-- Preserve the extension contracts documented in `README.md`. Treat changes to hooks, option names, REST routes, metadata, cache groups, and callback precedence as breaking changes.
+- Preserve the extension contracts documented in `docs/PLUGIN-GUIDE.md`. Treat changes to hooks, option names, REST routes, metadata, cache groups, and callback precedence as breaking changes.
 - Do not add legacy PRC aliases, settings migration, provider-specific logic, or integration-framework packaging unless the task explicitly covers that work.
 - The plugin requires VIP URL lookup, cache purge, and Cron Control APIs. Do not add silent non-VIP fallbacks that alter production behavior.
 - Do not rely on activation hooks or stored rewrite rules. VIP application loaders may include the plugin during `plugins_loaded`.
 - Keep `Accept: text/markdown` negotiation disabled by default unless cache separation has been established for the target platform.
 - Preserve access controls for private, draft, preview, and password-protected content. Never cache authenticated, preview, or password-authorized Markdown in a shared cache.
 - Cache invalidation changes must consider current and former permalinks, all Markdown URL forms, parents, taxonomy changes, and author display-name changes.
-- Update `README.md` when installation steps, supported versions, behavior, or extension contracts change.
+- Update `README.md` when the project overview, installation, or supported versions change; update `docs/PLUGIN-GUIDE.md` when behavior or extension contracts change.
 
 ## Style
 
