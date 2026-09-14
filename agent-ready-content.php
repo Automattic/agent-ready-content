@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Agent Ready Content
  * Description:       Publish WordPress VIP content as Markdown with agent discovery and extensible block conversion.
- * Version:           0.1.0
+ * Version:           0.2.0
  * Requires at least: 6.8
  * Requires PHP:      8.2
  * Author:            WPVIP
@@ -31,7 +31,7 @@ define( 'AGENT_READY_CONTENT_LOADED', true );
 define( 'AGENT_READY_CONTENT_FILE', __FILE__ );
 define( 'AGENT_READY_CONTENT_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AGENT_READY_CONTENT_URL', plugin_dir_url( __FILE__ ) );
-define( 'AGENT_READY_CONTENT_VERSION', '0.1.0' );
+define( 'AGENT_READY_CONTENT_VERSION', '0.2.0' );
 
 // Dedicated Markdown URLs are safe by default. Enable header negotiation only
 // after confirming that the site's page cache separates HTML and Markdown.
