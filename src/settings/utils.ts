@@ -10,13 +10,10 @@ export function errorMessage( error: unknown, fallback: string ): string {
 	return fallback;
 }
 
-/**
- * Read REST API titles and excerpts as text, removing tags and decoding entities.
- * @param html
- */
-export function htmlToText( html: string ): string {
-	const document = new DOMParser().parseFromString( html, 'text/html' );
-	return document.body.textContent || '';
+/** Convert a WordPress REST API `rendered` field to text without inserting its HTML into the page. */
+export function renderedHtmlToText( html: string ): string {
+	const parsedDocument = new DOMParser().parseFromString( html, 'text/html' );
+	return parsedDocument.body.textContent?.trim() ?? '';
 }
 
 export const newId = () => `item-${ Date.now() }-${ Math.random().toString( 36 ).slice( 2, 8 ) }`;
