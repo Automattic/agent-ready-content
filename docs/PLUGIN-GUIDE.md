@@ -21,7 +21,11 @@ shared Markdown cache.
 Output includes YAML metadata, the title, and converted content. HTML pages
 advertise alternate Markdown links and `/llms.txt`. The plugin preserves modern,
 nested, and legacy quotes, citations, lists, tables, links, images, and code.
+Text and descendants inside an element with `aria-hidden="true"` are excluded;
+`aria-hidden="false"` and content without the attribute remain visible.
 Unrecognized leaf blocks use HTML conversion; container blocks process children.
+Classic Editor and other freeform post HTML use the same HTML conversion path,
+so the plugin does not require the Block Editor to be enabled.
 
 `Accept: text/markdown` negotiation is disabled by default. Enable
 `AGENT_READY_CONTENT_ENABLE_ACCEPT_NEGOTIATION` only after verifying that the
@@ -87,10 +91,106 @@ metadata path. Preserve this distinction when adding integrations.
 | `agent_ready_content_settings_defaults`                                 | Supply defaults for unsaved settings without overwriting saved values.                                                                  |
 | `agent_ready_content_set_context` / `agent_ready_content_clear_context` | Set or clear a conversion context. Read it with `Block_Markdown_Registry::get_context()`. Use `try/finally` to clear it after failures. |
 
-Enable another post type with `add_post_type_support( $type, 'agent-ready-content' )`.
-Declare `agent-ready-content-llms-txt` support when its updates contribute to the
-index. Provider-specific data, queries, and dependencies remain outside the base
-plugin.
+### Common filter examples
+
+Replace the default author byline with provider-neutral post data, or add
+frontmatter fields:
+
+```php
+add_filter(
+	'agent_ready_content_authors',
+	static function ( array $authors, \WP_Post $post ): array {
+		$credit = get_post_meta( $post->ID, 'article_credit', true );
+
+		return is_string( $credit ) && '' !== $credit
+			? array( array( 'name' => $credit ) )
+			: $authors;
+	},
+	10,
+	2
+);
+
+add_filter(
+	'agent_ready_content_frontmatter',
+	static function ( array $data, \WP_Post $post ): array {
+		$data['language'] = get_post_meta( $post->ID, 'language', true ) ?: 'en';
+		return $data;
+	},
+	10,
+	2
+);
+```
+
+Append a small link section directly to `/llms.txt`:
+
+```php
+add_filter(
+	'agent_ready_content_llms_txt_sections',
+	static function ( array $sections ): array {
+		$sections[] = array(
+			'slug'  => 'policies',
+			'title' => 'Policies',
+			'links' => array(
+				array(
+					'title' => 'Editorial policy',
+					'url'   => home_url( '/editorial-policy/' ),
+				),
+			),
+		);
+		return $sections;
+	}
+);
+```
+
+Additional resource blocks become subsections under Additional Resources.
+Defaults provide editable starter values only when no saved value overrides
+them:
+
+```php
+add_filter(
+	'agent_ready_content_additional_resources_blocks',
+	static function ( array $blocks ): array {
+		$blocks[] = array(
+			'id'    => 'help',
+			'title' => 'Help',
+			'body'  => 'Contact the site team for help using this content.',
+		);
+		return $blocks;
+	}
+);
+
+add_filter(
+	'agent_ready_content_settings_defaults',
+	static function ( array $defaults ): array {
+		$defaults['site_summary'] = 'A concise description of this site.';
+		return $defaults;
+	}
+);
+```
+
+If any of these filters reads data maintained outside the post or plugin
+settings, invalidate the affected Markdown documents or `/llms.txt` when that
+data changes. Returning different filtered output does not invalidate an
+already cached response.
+
+Posts and pages are enabled automatically. Enable a custom post type after it is
+registered:
+
+```php
+add_action(
+	'init',
+	static function (): void {
+		add_post_type_support( 'book', 'agent-ready-content' );
+	},
+	20
+);
+```
+
+An integration that owns the post type can instead include
+`agent-ready-content` in its `register_post_type()` `supports` array. Declare
+the separate `agent-ready-content-llms-txt` support when changes to that post
+type affect content the integration contributes to the index. Provider-specific
+data, queries, and dependencies remain outside the base plugin.
 
 ### Cache invalidation
 

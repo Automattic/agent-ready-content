@@ -46,8 +46,8 @@ class Markdown_Converter {
 			return (string) $pre;
 		}
 
-		// Dynamic blocks use WordPress post globals. Restore the caller's state,
-		// including nested conversions and callbacks that throw an exception.
+		// Dynamic blocks may read the global post, which setup_postdata() does not
+		// assign. Temporarily set it, then restore the caller's exact state.
 		$keys  = array( 'post', 'id', 'authordata', 'currentday', 'currentmonth', 'page', 'pages', 'multipage', 'more', 'numpages' );
 		$saved = array();
 		foreach ( $keys as $key ) {
