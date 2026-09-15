@@ -10,7 +10,11 @@ export function errorMessage( error: unknown, fallback: string ): string {
 	return fallback;
 }
 
-/** Convert a WordPress REST API `rendered` field to text without inserting its HTML into the page. */
+/**
+ * Convert a WordPress REST API `rendered` field to text without inserting its HTML into the page.
+ *
+ * @param html The rendered HTML returned by the WordPress REST API.
+ */
 export function renderedHtmlToText( html: string ): string {
 	const parsedDocument = new DOMParser().parseFromString( html, 'text/html' );
 	return parsedDocument.body.textContent?.trim() ?? '';
