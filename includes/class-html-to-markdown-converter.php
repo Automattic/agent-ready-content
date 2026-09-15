@@ -104,8 +104,9 @@ final class HTML_To_Markdown_Converter {
 		$blockquote_depth = 0;
 		$in_pre           = false;
 
-		$link_stack = array();
-		$list_stack = array();
+		$link_stack   = array();
+		$list_stack   = array();
+		$hidden_stack = array();
 
 		// Table state.
 		$in_table        = false;
@@ -115,6 +116,37 @@ final class HTML_To_Markdown_Converter {
 
 		while ( $processor->next_token() ) {
 			$token_name = $processor->get_token_name();
+			$is_tag     = '#tag' === $processor->get_token_type();
+
+			if ( ! empty( $hidden_stack ) ) {
+				// The Tag Processor exposes source tokens rather than repaired HTML
+				// structure, so balance its tags until the hidden element closes.
+				if ( $is_tag && $token_name ) {
+					if ( $processor->is_tag_closer() ) {
+						$matching_index = array_search( $token_name, array_reverse( $hidden_stack, true ), true );
+						if ( false !== $matching_index ) {
+							$hidden_stack = array_slice( $hidden_stack, 0, $matching_index );
+						}
+					} elseif ( $this->element_expects_closer( $processor, $token_name ) ) {
+						$hidden_stack[] = $token_name;
+					}
+				}
+				continue;
+			}
+
+			if (
+				$is_tag
+				&& $token_name
+				&& ! $processor->is_tag_closer()
+				&& 'true' === strtolower( trim( (string) $processor->get_attribute( 'aria-hidden' ) ) )
+			) {
+				if ( $processor instanceof WP_HTML_Processor ) {
+					$this->skip_processor_element( $processor );
+				} elseif ( $this->element_expects_closer( $processor, $token_name ) ) {
+					$hidden_stack[] = $token_name;
+				}
+				continue;
+			}
 
 			if ( '#text' === $token_name ) {
 				$text = (string) $processor->get_modifiable_text();
@@ -368,6 +400,41 @@ final class HTML_To_Markdown_Converter {
 		}
 
 		return $markdown;
+	}
+
+	/**
+	 * Advances the HTML Processor past the current element and its descendants.
+	 *
+	 * @param WP_HTML_Processor $processor Processor positioned on an opening tag.
+	 */
+	private function skip_processor_element( WP_HTML_Processor $processor ): void {
+		if ( ! $processor->expects_closer() ) {
+			return;
+		}
+
+		$depth = $processor->get_current_depth();
+		while ( $processor->next_token() && $depth <= $processor->get_current_depth() ) {
+			continue;
+		}
+	}
+
+	/**
+	 * Whether the current element expects a closing token.
+	 *
+	 * @param WP_HTML_Tag_Processor|WP_HTML_Processor $processor Processor instance.
+	 * @param string                                  $token_name Current token name.
+	 * @return bool Whether the element expects a closing token.
+	 */
+	private function element_expects_closer( $processor, string $token_name ): bool {
+		if ( $processor->has_self_closing_flag() ) {
+			return false;
+		}
+
+		return ! in_array(
+			$token_name,
+			array( 'AREA', 'BASE', 'BR', 'COL', 'EMBED', 'HR', 'IMG', 'INPUT', 'LINK', 'META', 'PARAM', 'SOURCE', 'TRACK', 'WBR' ),
+			true
+		);
 	}
 
 	/**
