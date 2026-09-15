@@ -2,7 +2,7 @@ import apiFetch from '@wordpress/api-fetch';
 import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
-import { errorMessage, htmlToText } from '../utils';
+import { errorMessage, renderedHtmlToText } from '../utils';
 
 import type { ResolvedPost, SearchPost } from '../types';
 
@@ -43,8 +43,8 @@ export default function usePostSearch( resolved: ResolvedPost[] ) {
 					.filter( post => ! post.excerpt.protected )
 					.map( post => ( {
 						id: post.id,
-						title: htmlToText( post.title.rendered ),
-						excerpt: htmlToText( post.excerpt.rendered ),
+						title: renderedHtmlToText( post.title.rendered ),
+						excerpt: renderedHtmlToText( post.excerpt.rendered ),
 					} ) );
 				setResults( previous => ( page === 1 ? found : [ ...previous, ...found ] ) );
 				setRecords( previous => ( {
